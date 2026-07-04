@@ -164,6 +164,7 @@
     tr:last-child td{border-bottom:0}
     tbody tr:hover{background:var(--panel-2)}
     .name-cell{display:flex;align-items:center;gap:11px;font-weight:700}
+    .file-link:hover span:last-child{text-decoration:underline;text-underline-offset:3px;color:var(--accent)}
     .file-icon{
       width:28px;
       height:28px;
@@ -177,8 +178,6 @@
     }
     html[data-theme="dark"] .file-icon{background:#312e24;border-color:#7c2d12}
     .type-text{color:var(--muted);font-size:13px;font-weight:600}
-    .open-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800;background:var(--panel);color:var(--text)}
-    .open-btn:hover{border-color:var(--accent);color:var(--accent)}
     .note{color:var(--muted);font-size:12px;line-height:1.45;padding:14px 16px;border-top:1px solid var(--line);background:var(--panel-2)}
     .empty{display:none;padding:28px;text-align:center;color:var(--muted)}
     .footer{margin-top:14px;color:var(--muted);font-size:12px;text-align:center}
@@ -228,7 +227,6 @@
             <th data-key="name">Name <span class="sort">↕</span></th>
             <th data-key="date">Date modified <span class="sort">↕</span></th>
             <th data-key="type">Type <span class="sort">↕</span></th>
-            <th data-key="action">Open</th>
           </tr>
         </thead>
         <tbody id="fileBody"></tbody>
@@ -302,10 +300,9 @@
 
       tbody.innerHTML = list.map(f => `
         <tr>
-          <td><a class="name-cell" href="${f.file}"><span class="file-icon">${f.icon}</span><span>${f.name}</span></a></td>
+          <td><a class="name-cell file-link" href="${f.file}" target="_blank" rel="noopener" title="Open ${f.name}"><span class="file-icon">${f.icon}</span><span>${f.name}</span></a></td>
           <td data-value="${f.date}">${f.displayDate}</td>
           <td><span class="type-text">${f.type}</span></td>
-          <td><a class="open-btn" href="${f.file}" target="_blank" rel="noopener">Open ↗</a></td>
         </tr>
       `).join('');
       empty.style.display = list.length ? 'none' : 'block';
@@ -317,7 +314,6 @@
     document.querySelectorAll('th[data-key]').forEach(th => {
       th.addEventListener('click', () => {
         const key = th.dataset.key;
-        if(key === 'action') return;
         if(sortKey === key) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
         else { sortKey = key; sortDir = 'asc'; }
         renderFiles();
